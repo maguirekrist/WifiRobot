@@ -8,6 +8,7 @@
 import Foundation
 import Metal
 import MetalKit
+import simd
 
 class Renderer : NSObject, MTKViewDelegate {
     
@@ -17,10 +18,15 @@ class Renderer : NSObject, MTKViewDelegate {
     let pipelineState: MTLRenderPipelineState
     let vertexBuffer: MTLBuffer
     
-    var grid: OccupancyGrid!
+    var viewMatrix: matrix_float4x4
+    var viewMatrixBuffer: MTLBuffer
+    
+    var gridTexture: MTLTexture?
+    var wifiTexture: MTLTexture?
     
     init(_ mtkView: MetalView) {
         self.parent = mtkView
+        
         if let metalDevice = MTLCreateSystemDefaultDevice() {
             self.metalDevice = metalDevice
         }
@@ -53,21 +59,12 @@ class Renderer : NSObject, MTKViewDelegate {
             
         ]
         self.vertexBuffer = metalDevice.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Vertex>.stride, options: [])!
+
+        self.viewMatrix = MakeScaleMatrix(xScale: 0.5, yScale: 0.5)
+        self.viewMatrixBuffer = metalDevice.makeBuffer(length: MemoryLayout<simd_float4x4>.stride, options: [])!
+
         
         super.init()
-        self.grid = generateFakeGrid(dim: 50)
-    }
-    
-    func generateFakeGrid(dim: Int) -> OccupancyGrid {
-        var temp = OccupancyGrid(width: dim, height: dim, data: [])
-        
-        for _ in 0..<dim {
-            for _ in 0..<dim {
-                temp.data.append(UInt8.random(in: 0..<255))
-            }
-        }
-        
-        return temp
     }
     
     func draw(in view: MTKView) {
@@ -77,14 +74,18 @@ class Renderer : NSObject, MTKViewDelegate {
        
         //Because our image is black and white, we can store pixel data as a single byte, hence why here we use the pixel format:
         //r8Uint which is no negative numbers and between 0 and 255.
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: grid.width, height: grid.height, mipmapped: false)
+        if let grid = self.parent.mapModel.occupancyGrid {
+            let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: grid.width, height: grid.height, mipmapped: false)
+            
+            self.gridTexture = self.metalDevice.makeTexture(descriptor: textureDescriptor)!
+            
+            let region = MTLRegionMake2D(0, 0, grid.width, grid.height)
+            //bytesPerRow is calculated by number of bytes per pixel multiplied by the image width
+            //withBytes is the actually byte array of texture/image we want to load
+            self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: grid.data, bytesPerRow: 1 * grid.width)
+        }
         
-        let texture = self.metalDevice.makeTexture(descriptor: textureDescriptor)!
-        
-        let region = MTLRegionMake2D(0, 0, grid.width, grid.height)
-        //bytesPerRow is calculated by number of bytes per pixel multiplied by the image width
-        //withBytes is the actually byte array of texture/image we want to load
-        texture.replace(region: region, mipmapLevel: 0, withBytes: grid.data, bytesPerRow: 1 * grid.width)
+        memcpy(viewMatrixBuffer.contents(), &self.viewMatrix, MemoryLayout<simd_float4x4>.stride)
         
         
         let commandBuffer = metalCommandQueue.makeCommandBuffer()
@@ -98,7 +99,8 @@ class Renderer : NSObject, MTKViewDelegate {
         
         renderEncoder?.setRenderPipelineState(pipelineState)
         renderEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
-        renderEncoder?.setFragmentTexture(texture, index: 0)
+        renderEncoder?.setVertexBuffer(viewMatrixBuffer, offset: 0, index: 1)
+        renderEncoder?.setFragmentTexture(self.gridTexture, index: 0)
         renderEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
         
         
@@ -113,4 +115,5 @@ class Renderer : NSObject, MTKViewDelegate {
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
         
     }
+    
 }

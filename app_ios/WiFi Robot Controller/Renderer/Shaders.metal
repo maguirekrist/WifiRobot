@@ -15,11 +15,14 @@ struct Fragment {
     float2 texCoord;
 };
 
-vertex Fragment vertexShader(const device Vertex *vertexArray[[buffer(0)]], unsigned int vid [[vertex_id]]) {
+vertex Fragment vertexShader(
+                             const device Vertex *vertexArray[[buffer(0)]],
+                             const device float4x4& view [[buffer(1)]],
+                             unsigned int vid [[vertex_id]]) {
     Vertex input = vertexArray[vid];
     
     Fragment output;
-    output.position = float4(input.position.x, input.position.y, 0, 1);
+    output.position = float4(input.position.x, input.position.y, 0, 1) * view;
     output.texCoord = input.texCoord;
     
     return output;

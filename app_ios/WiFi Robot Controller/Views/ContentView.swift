@@ -43,21 +43,22 @@ struct ContentView: View {
                 VStack {
                     MetalView()
                         .frame(height: 300)
-                    Spacer()
-                    Group {
-                        Text("Welcome!")
-                        Button(action: {
-                            let test = MapClient(host: "192.168.1.76");
-                        }, label: {
-                            Text("Connect to Turtlebot")
-                                .foregroundColor(.white)
-                                .frame(width: 200, height: 40)
-                                .background(Color.green)
-                                .cornerRadius(15)
-                                .padding()
-                        })
-                        
-                    }
+                    WifiListView()
+//                    Spacer()
+//
+//                    Group {
+//                        Text("Welcome!")
+//                        Button(action: {
+//                        }, label: {
+//                            Text("Connect to Turtlebot")
+//                                .foregroundColor(.white)
+//                                .frame(width: 200, height: 40)
+//                                .background(Color.green)
+//                                .cornerRadius(15)
+//                                .padding()
+//                        })
+//
+//                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.top)

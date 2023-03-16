@@ -3,13 +3,25 @@ import { WifiCollection } from "../models/WifiCollection";
 import { IWifiRun, WifiRun } from "../models/WifiRun";
 import { ITcpSocket } from "../servers/TCPServer";
 import net from 'net'
+import NetworkDelegate from "./AbstractNetworkDelegate";
+import { CreateMockWifiRun } from "../utils/mock";
 
-class TcpWifiDelegate implements ITcpSocket {
-    port: number = 3002;
+class TcpWifiDelegate extends NetworkDelegate {
     current_run?: IWifiRun & any = undefined;
-    clients: net.Socket[] = []
 
-    onMessage (msg: Buffer, rinfo: RemoteInfo): void {
+    constructor() {
+        super(3002);
+
+        if(process.env.USE_MOCK == 'true')
+            this.current_run = CreateMockWifiRun();
+
+        setInterval(() => {
+            if(this.current_run && this.current_run.scans[0])
+                this.publishCollection();
+        }, 5000)
+    }
+
+    override onMessage (msg: Buffer, rinfo: RemoteInfo): void {
         let msgStr = msg.toString();
         let msgJson = JSON.parse(msgStr);
         if(!this.handleInitializeRun(msgJson)) {
@@ -18,10 +30,6 @@ class TcpWifiDelegate implements ITcpSocket {
             this.current_run.save();
         };
     };
-
-    onConnect() {
-        //DO NOTHING
-    }
 
     private handleInitializeRun(msg: any): boolean {
         if(!msg["runId"])
@@ -34,6 +42,24 @@ class TcpWifiDelegate implements ITcpSocket {
         });
         this.current_run.save();
         return true;
+    }
+
+    private publishCollection(): void {
+        console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
+
+        //console.log(this.current_run.scans[0])
+
+        for(let client of this.clients) {
+            console.log(client.writableLength)
+            if(this.current_run.scans[0]) {
+                client.write(JSON.stringify(this.current_run.scans[0]), (err) => {
+                    if(err) {
+                        console.log(err)
+                    } else {
+                    }
+                });
+            }
+        }
     }
 
 }

@@ -1,4 +1,4 @@
-import { Schema, model, connect, Date } from 'mongoose';
+import { Schema, model, connect } from 'mongoose';
 import { IVector3D, vector3DSchema } from './Vector3d';
 import { IWifiSignal, wifiSignalSchema } from './WifiSignal';
 

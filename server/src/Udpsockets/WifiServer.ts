@@ -2,7 +2,7 @@ import { RemoteInfo } from "dgram";
 import { Model, Types, Document } from "mongoose";
 import { WifiCollection } from "../models/WifiCollection";
 import { IWifiRun, WifiRun } from "../models/WifiRun";
-import { ISocketServerDelegate } from "../servers/SocketServer";
+import { ISocketServerDelegate } from "../servers/UDPServer";
 
 class WifiServer implements ISocketServerDelegate {
     port: number = 3002;

@@ -1,7 +1,7 @@
 import { RemoteInfo } from "dgram";
 import { IOccupancyGrid } from "../models/OccupancyGrid";
 import { IWifiRun, WifiRun } from "../models/WifiRun";
-import { ISocketServerDelegate } from "../servers/SocketServer";
+import { ISocketServerDelegate } from "../servers/UDPServer";
 import dgram from 'node:dgram'
 import { Readable } from "stream";
 import { json } from "stream/consumers";

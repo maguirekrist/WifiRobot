@@ -1,15 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const WifiRun_1 = require("../models/WifiRun");
 const mock_1 = require("../utils/mock");
 const util_1 = require("../utils/util");
-const USE_MOCK = true;
-class TcpMapDelegate {
+const AbstractNetworkDelegate_1 = __importDefault(require("./AbstractNetworkDelegate"));
+class TcpMapDelegate extends AbstractNetworkDelegate_1.default {
     constructor() {
-        this.port = 3001;
+        super(3001);
         this.current_run = undefined;
-        this.clients = [];
-        if (USE_MOCK)
+        if (process.env.USE_MOCK == 'true')
             this.map = (0, mock_1.CreateMockMap)(400);
         setInterval(() => {
             if (this.map)
@@ -23,15 +25,6 @@ class TcpMapDelegate {
             }
         }
     }
-    onClose(client) {
-        this.clients = this.clients.filter(c => c !== client);
-    }
-    onConnect(socket) {
-        this.clients.push(socket);
-    }
-    onDrain(socket) {
-        socket.end();
-    }
     handleInitializeRun(msg) {
         if (!msg["runId"])
             return false;
@@ -43,14 +36,13 @@ class TcpMapDelegate {
         console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`);
         for (let client of this.clients) {
             console.log(client.writableLength);
-            let result = client.write(JSON.stringify(this.map), (err) => {
+            client.write(JSON.stringify(this.map), (err) => {
                 if (err) {
                     console.log(err);
                 }
                 else {
                 }
             });
-            console.log("Write result: " + result);
         }
     }
 }

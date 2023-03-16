@@ -8,7 +8,7 @@ export interface ISocketServerDelegate {
     onListening?: (server: dgram.Socket) => void;
 }
 
-export class SocketServer {
+export class UDPServer {
     server: dgram.Socket;
     port: number;
 
@@ -42,6 +42,6 @@ export class SocketServer {
     }
 
     listen() {
-        this.server.bind(this.port, '192.168.1.76');
+        this.server.bind(this.port, process.env.HOST_ADDRESS);
     }
 }

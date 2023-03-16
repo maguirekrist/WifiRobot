@@ -1,22 +1,20 @@
 import { RemoteInfo, Socket } from "dgram";
 import { IOccupancyGrid } from "../models/OccupancyGrid";
 import { IWifiRun, WifiRun } from "../models/WifiRun";
-import { ISocketServerDelegate } from "../servers/SocketServer";
+import { ISocketServerDelegate } from "../servers/UDPServer";
 import { ITcpSocket } from "../servers/TCPServer";
 import net from 'net'
 import { CreateMockMap } from "../utils/mock";
 import { IsJSON } from "../utils/util";
+import NetworkDelegate from "./AbstractNetworkDelegate";
 
-const USE_MOCK = true;
-
-class TcpMapDelegate implements ITcpSocket {
-    port: number = 3001;
+class TcpMapDelegate extends NetworkDelegate {
     map?: IOccupancyGrid;
     current_run?: IWifiRun & any = undefined;
-    clients: net.Socket[] = []
 
     constructor() {
-        if(USE_MOCK)
+        super(3001);
+        if(process.env.USE_MOCK == 'true')
             this.map = CreateMockMap(400);
 
         setInterval(() => {
@@ -25,24 +23,12 @@ class TcpMapDelegate implements ITcpSocket {
         }, 5000)
     }
 
-    onMessage(data: Buffer, rinfo: RemoteInfo) {
+    override onMessage(data: Buffer, rinfo: RemoteInfo) {
         if(IsJSON(data.toString())) {
             if(!this.handleInitializeRun(data)) {
                 this.map = JSON.parse(data.toString());
             }
         }
-    }
-
-    onClose(client: net.Socket) {
-        this.clients = this.clients.filter(c => c !== client);
-    }
-
-    onConnect(socket: net.Socket) {
-        this.clients.push(socket);
-    }
-
-    onDrain(socket: net.Socket) {
-        socket.end();
     }
     
     private handleInitializeRun(msg: any): boolean {
@@ -60,13 +46,12 @@ class TcpMapDelegate implements ITcpSocket {
 
         for(let client of this.clients) {
             console.log(client.writableLength)
-            let result = client.write(JSON.stringify(this.map), (err) => {
+            client.write(JSON.stringify(this.map), (err) => {
                 if(err) {
                     console.log(err)
                 } else {
                 }
             });
-            console.log("Write result: " + result)
         }
     }
 }

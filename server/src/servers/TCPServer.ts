@@ -1,6 +1,5 @@
 import { RemoteInfo } from 'dgram';
 import net from 'net';
-
 export interface ITcpSocket {
     port: number;
     onError?: (err: Error) => void;
@@ -43,7 +42,7 @@ export class TCPServer {
     }
 
     listen() {
-        this.server.listen(this.delegate.port, '192.168.1.76', () => {
+        this.server.listen(this.delegate.port, process.env.HOST_ADDRESS, () => {
             console.log("Server listening on port " + this.delegate.port)
         })
     }

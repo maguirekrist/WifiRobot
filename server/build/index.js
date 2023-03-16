@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,13 +38,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const WifiRun_1 = require("./models/WifiRun");
-const TCPServer_1 = require("./servers/TCPServer");
 const TcpMapDelegate_1 = __importDefault(require("./TcpDelegates/TcpMapDelegate"));
 const TcpWifiDelegate_1 = __importDefault(require("./TcpDelegates/TcpWifiDelegate"));
+const dotenv = __importStar(require("dotenv")); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config();
 const db_url = 'mongodb://localhost:27017';
 const db_name = 'bot_db';
-const socketServer = new TCPServer_1.TCPServer(new TcpMapDelegate_1.default());
-const wifiServer = new TCPServer_1.TCPServer(new TcpWifiDelegate_1.default());
+const socketServer = new TcpMapDelegate_1.default();
+const wifiServer = new TcpWifiDelegate_1.default();
 function connectDb() {
     return __awaiter(this, void 0, void 0, function* () {
         yield mongoose_1.default.connect(`${db_url}/${db_name}`);
@@ -45,7 +69,7 @@ app.get(`/api/runs`, (req, res) => __awaiter(void 0, void 0, void 0, function* (
     res.send(yield WifiRun_1.WifiRun.find().sort({ ranOn: -1 }).select({ name: 1, _id: 1 }));
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {
-    yield connectDb();
+    //await connectDb();
     socketServer.listen();
     wifiServer.listen();
     console.log('The application is listening on port 3000');

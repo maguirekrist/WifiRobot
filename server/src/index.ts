@@ -1,20 +1,17 @@
 import express from 'express';
-import MapServer from './Udpsockets/MapServer';
-import { MongoClient } from 'mongodb'
-import { SocketServer } from './servers/SocketServer';
-import WifiServer from './Udpsockets/WifiServer';
-import { WifiCollection } from './models/WifiCollection';
 import mongoose from 'mongoose';
 import { WifiRun } from './models/WifiRun';
 import { TCPServer } from './servers/TCPServer';
 import TcpMapDelegate from './TcpDelegates/TcpMapDelegate';
 import TcpWifiDelegate from './TcpDelegates/TcpWifiDelegate';
+import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+dotenv.config()
 
 const db_url = 'mongodb://localhost:27017';
 const db_name = 'bot_db'
 
-const socketServer = new TCPServer(new TcpMapDelegate());
-const wifiServer = new TCPServer(new TcpWifiDelegate());
+const socketServer = new TcpMapDelegate();
+const wifiServer = new TcpWifiDelegate();
 
 async function connectDb() {
 	await mongoose.connect(`${db_url}/${db_name}`);
@@ -43,7 +40,7 @@ app.get(`/api/runs`, async(req, res) => {
 })
 
 app.listen(3000, async () => {
-	await connectDb();
+	//await connectDb();
 	socketServer.listen();
 	wifiServer.listen();
 	console.log('The application is listening on port 3000');

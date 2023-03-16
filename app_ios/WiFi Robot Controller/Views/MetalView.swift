@@ -10,6 +10,12 @@ import MetalKit
 import SwiftUI
 
 struct MetalView: UIViewRepresentable {
+    @ObservedObject var mapModel = GridProvider()
+    
+    init() {
+        print("Metal View initialized!")
+    }
+    
     func makeCoordinator() -> Renderer {
         return Renderer(self)
     }
