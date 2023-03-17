@@ -7,13 +7,18 @@ exports.TCPServer = void 0;
 const net_1 = __importDefault(require("net"));
 class TCPServer {
     constructor(delegate) {
+        this.buffer = Buffer.from("");
         this.delegate = delegate;
-        this.server = net_1.default.createServer((socket) => {
-            this.socket = socket;
+        //The call back on createServer is actually the connection event
+        this.server = net_1.default.createServer({ allowHalfOpen: false }, (socket) => {
             console.log(`Client ${socket.remoteAddress}:${socket.remotePort} connected`);
-            delegate.onConnect(this.socket);
+            delegate.onConnect(socket);
             socket.on('data', (data) => {
-                delegate.onMessage(data, { address: socket.remoteAddress, family: "IPv4", port: socket.remotePort, size: 0 });
+                this.buffer = Buffer.concat([this.buffer, data]);
+                if (data.byteLength != parseInt(process.env.MTU) && this.buffer.byteLength != 0) {
+                    delegate.onMessage(this.buffer, { address: socket.remoteAddress, family: "IPv4", port: socket.remotePort, size: socket.readableHighWaterMark });
+                    this.buffer = Buffer.from("");
+                }
             });
             socket.on('end', () => {
                 var _a;

@@ -32,7 +32,7 @@ class TcpWifiDelegate extends AbstractNetworkDelegate_1.default {
     handleInitializeRun(msg) {
         if (!msg["runId"])
             return false;
-        console.log(`Connected to a new run ${msg["runId"]}`);
+        console.log(`Connected to a new run ${msg["runId"]} on Wifi`);
         this.current_run = new WifiRun_1.WifiRun({
             name: msg["runId"]
         });
@@ -40,20 +40,8 @@ class TcpWifiDelegate extends AbstractNetworkDelegate_1.default {
         return true;
     }
     publishCollection() {
-        console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`);
-        //console.log(this.current_run.scans[0])
-        for (let client of this.clients) {
-            console.log(client.writableLength);
-            if (this.current_run.scans[0]) {
-                client.write(JSON.stringify(this.current_run.scans[0]), (err) => {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                    }
-                });
-            }
-        }
+        // console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
+        super.publish(this.current_run.scans[0]);
     }
 }
 exports.default = TcpWifiDelegate;

@@ -40,7 +40,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const WifiRun_1 = require("./models/WifiRun");
 const TcpMapDelegate_1 = __importDefault(require("./TcpDelegates/TcpMapDelegate"));
 const TcpWifiDelegate_1 = __importDefault(require("./TcpDelegates/TcpWifiDelegate"));
-const dotenv = __importStar(require("dotenv")); // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
+const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 const db_url = 'mongodb://localhost:27017';
 const db_name = 'bot_db';
@@ -69,8 +69,8 @@ app.get(`/api/runs`, (req, res) => __awaiter(void 0, void 0, void 0, function* (
     res.send(yield WifiRun_1.WifiRun.find().sort({ ranOn: -1 }).select({ name: 1, _id: 1 }));
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {
-    //await connectDb();
+    yield connectDb();
     socketServer.listen();
-    wifiServer.listen();
+    // wifiServer.listen();
     console.log('The application is listening on port 3000');
 }));
