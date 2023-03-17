@@ -18,6 +18,7 @@
 		BD99997329BF3D0E002C5EDA /* VisualModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD99997229BF3D0E002C5EDA /* VisualModels.swift */; };
 		BD99997529BF5E77002C5EDA /* WifiListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD99997429BF5E77002C5EDA /* WifiListView.swift */; };
 		BDC398F929C34D6500FE44DD /* SimdUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC398F829C34D6500FE44DD /* SimdUtils.swift */; };
+		BDC398FB29C3E43F00FE44DD /* LiveFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC398FA29C3E43F00FE44DD /* LiveFeedView.swift */; };
 		BDF4974E298C3D7F006CF8B3 /* WiFi_Robot_ControllerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF4974D298C3D7F006CF8B3 /* WiFi_Robot_ControllerApp.swift */; };
 		BDF49750298C3D7F006CF8B3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF4974F298C3D7F006CF8B3 /* ContentView.swift */; };
 		BDF49752298C3D81006CF8B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDF49751298C3D81006CF8B3 /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		BD99997229BF3D0E002C5EDA /* VisualModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualModels.swift; sourceTree = "<group>"; };
 		BD99997429BF5E77002C5EDA /* WifiListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiListView.swift; sourceTree = "<group>"; };
 		BDC398F829C34D6500FE44DD /* SimdUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimdUtils.swift; sourceTree = "<group>"; };
+		BDC398FA29C3E43F00FE44DD /* LiveFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveFeedView.swift; sourceTree = "<group>"; };
 		BDF4974A298C3D7F006CF8B3 /* WiFi Robot Controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WiFi Robot Controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDF4974D298C3D7F006CF8B3 /* WiFi_Robot_ControllerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFi_Robot_ControllerApp.swift; sourceTree = "<group>"; };
 		BDF4974F298C3D7F006CF8B3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				BDF4974F298C3D7F006CF8B3 /* ContentView.swift */,
 				BD99996129BCEC2A002C5EDA /* MetalView.swift */,
 				BD99997429BF5E77002C5EDA /* WifiListView.swift */,
+				BDC398FA29C3E43F00FE44DD /* LiveFeedView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 				BD99996C29BE7A23002C5EDA /* WifiDataProvider.swift in Sources */,
 				BDC398F929C34D6500FE44DD /* SimdUtils.swift in Sources */,
 				BD99996029BCE767002C5EDA /* Renderer.swift in Sources */,
+				BDC398FB29C3E43F00FE44DD /* LiveFeedView.swift in Sources */,
 				BDF49750298C3D7F006CF8B3 /* ContentView.swift in Sources */,
 				BD99996A29BD3EE4002C5EDA /* BluetoothManager.swift in Sources */,
 				BD99996229BCEC2A002C5EDA /* MetalView.swift in Sources */,
@@ -524,6 +528,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "WiFi Robot Controller/Renderer/definitions.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_SERVER = 192.168.1.81;
 			};
 			name = Debug;
 		};
@@ -556,6 +561,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "WiFi Robot Controller/Renderer/definitions.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGET_SERVER = 192.168.1.81;
 			};
 			name = Release;
 		};

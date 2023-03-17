@@ -14,7 +14,7 @@ struct OccupancyGrid: Codable {
 }
 
 struct Vector3D: Hashable, Codable {
-    var x: Int
-    var y: Int
-    var z: Int
+    var x: Float
+    var y: Float
+    var z: Float
 }

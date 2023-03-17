@@ -15,7 +15,7 @@ class TcpMapDelegate extends NetworkDelegate {
     constructor() {
         super(3001);
         if(process.env.USE_MOCK == 'true')
-            this.map = CreateMockMap(25);
+            this.map = CreateMockMap(400);
 
         setInterval(() => {
             if(this.map)

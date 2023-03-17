@@ -13,12 +13,12 @@ struct WiFi_Robot_ControllerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LiveFeedView()
         }
     }
 }
-
-public func bluetoothScan() {
-    let BTManager = CBCentralManager()
-    BTManager.scanForPeripherals(withServices: nil)
-}
+//
+//public func bluetoothScan() {
+//    let BTManager = CBCentralManager()
+//    BTManager.scanForPeripherals(withServices: nil)
+//}

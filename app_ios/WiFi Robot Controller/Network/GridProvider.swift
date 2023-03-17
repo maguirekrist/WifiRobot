@@ -20,7 +20,11 @@ class GridProvider: ObservableObject, NetworkDelegate {
     func onMessage(data: String) {
         let decoder = JSONDecoder()
         DispatchQueue.main.async {
-            self.occupancyGrid = try! decoder.decode(OccupancyGrid.self, from: data.data(using: .utf8)!)
+            do {
+                self.occupancyGrid = try decoder.decode(OccupancyGrid.self, from: data.data(using: .utf8)!)
+            } catch let error {
+                print("Error occured whilst decoding incoming map collection: \(error)")
+            }
         }
         print("Sucessfully got map: ", self.occupancyGrid?.width)
     }
