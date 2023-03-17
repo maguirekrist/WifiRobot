@@ -14,7 +14,6 @@ const client = net.createConnection({ port: 3001, host: '192.168.1.76', allowHal
 client.on('data', (data) => {
     console.log(client.writableLength)
     if(data.byteLength > client.writableHighWaterMark) {
-
     }
     console.log('Received data of size: ' + data.byteLength)
     // if(data.toString()[data.length - 1] == '}') {

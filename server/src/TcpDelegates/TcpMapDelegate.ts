@@ -15,7 +15,7 @@ class TcpMapDelegate extends NetworkDelegate {
     constructor() {
         super(3001);
         if(process.env.USE_MOCK == 'true')
-            this.map = CreateMockMap(400);
+            this.map = CreateMockMap(25);
 
         setInterval(() => {
             if(this.map)
@@ -23,11 +23,13 @@ class TcpMapDelegate extends NetworkDelegate {
         }, 5000)
     }
 
-    override onMessage(data: Buffer, rinfo: RemoteInfo) {
-        if(IsJSON(data.toString())) {
-            if(!this.handleInitializeRun(data)) {
-                this.map = JSON.parse(data.toString());
-            }
+    override onMessage(msg: Buffer, rinfo: RemoteInfo) {
+        let msgStr = msg.toString();
+        let msgJson = JSON.parse(msgStr);
+        if(!this.handleInitializeRun(msgJson)) {
+            this.map = msgJson;
+            console.log(this.map?.height)
+            console.log(this.map?.width)
         }
     }
     
@@ -35,24 +37,15 @@ class TcpMapDelegate extends NetworkDelegate {
         if(!msg["runId"])
             return false;
         
-        console.log(`Connected to a new run ${msg["runId"]}`)
+        console.log(`Connected to a new run ${msg["runId"]} on Map`)
 
         this.current_run = WifiRun.find({ name: msg["runId"]});
         return true;
     }
 
     private publishMap(): void {
-        console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`)
-
-        for(let client of this.clients) {
-            console.log(client.writableLength)
-            client.write(JSON.stringify(this.map), (err) => {
-                if(err) {
-                    console.log(err)
-                } else {
-                }
-            });
-        }
+        // console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`)
+        super.publish(this.map!);
     }
 }
 
