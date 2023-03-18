@@ -15,7 +15,7 @@ class TcpMapDelegate extends NetworkDelegate {
     constructor() {
         super(3001);
         if(process.env.USE_MOCK == 'true')
-            this.map = CreateMockMap(25);
+            this.map = CreateMockMap(400);
 
         setInterval(() => {
             if(this.map)
@@ -27,9 +27,10 @@ class TcpMapDelegate extends NetworkDelegate {
         let msgStr = msg.toString();
         let msgJson = JSON.parse(msgStr);
         if(!this.handleInitializeRun(msgJson)) {
-            this.map = msgJson;
-            console.log(this.map?.height)
-            console.log(this.map?.width)
+            // console.log(msgJson.data.filter((e: number) => e < 10 && e >= 0))
+            this.map = this.remapGrid(msgJson as IOccupancyGrid);
+            console.log(`Received map of ${this.map?.width} width and ${this.map?.height}: is correct? ${this.map?.height * this.map?.width == this.map?.data.length}`)
+            // console.log(this.map.data.filter(e => e != 0 && e != 255))
         }
     }
     
@@ -41,6 +42,18 @@ class TcpMapDelegate extends NetworkDelegate {
 
         this.current_run = WifiRun.find({ name: msg["runId"]});
         return true;
+    }
+
+    private remapGrid(grid: IOccupancyGrid) {
+        grid.data = grid.data.map(e => {
+            if(e < 0) {
+                return -1;
+            } else {
+                var frac = e / 100;
+                return Math.round(125 * frac);
+            }
+        })
+        return grid;
     }
 
     private publishMap(): void {
