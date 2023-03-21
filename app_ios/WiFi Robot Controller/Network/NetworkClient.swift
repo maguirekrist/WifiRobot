@@ -49,24 +49,15 @@ class NetworkClient {
     private func receivePackets() {
         self.connection.receive(minimumIncompleteLength: 1, maximumLength: self.maximumTransmissionUnit) { (data, _, isComplete, error) in
             if let  data = data, !data.isEmpty {
-                self.currentBuffer.append(data)
-                
-                print(data.count)
-                
-                if self.maximumTransmissionUnit > data.count {
+                if(String(data: data.suffix(3), encoding: .utf8) == "end") {
+                    let temp = data.dropLast(3)
+                    self.currentBuffer.append(temp)
                     let bufferStr = String(data: self.currentBuffer, encoding: .utf8)!
                     self.delegate.onMessage(data: bufferStr)
                     self.currentBuffer = Data()
+                } else {
+                    self.currentBuffer.append(data)
                 }
-                
-//                print(String(data: data, encoding: .utf8))
-//                if(String(data: data.suffix(3), encoding: .utf8) == "end") {
-//                    let bufferStr = String(data: self.currentBuffer, encoding: .utf8)!
-//                    self.delegate.onMessage(data: bufferStr)
-//                    self.currentBuffer = Data()
-//                } else {
-//                    self.currentBuffer.append(data)
-//                }
             }
             
             if let error = error {

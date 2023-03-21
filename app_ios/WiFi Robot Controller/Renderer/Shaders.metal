@@ -28,11 +28,17 @@ vertex Fragment vertexShader(
     return output;
 }
 
-fragment float4 fragmentShader(Fragment input [[stage_in]], texture2d<uint> texture [[texture(0)]]) {
+fragment float4 fragmentShader(
+                               Fragment input [[stage_in]],
+                               const device FragmentUniforms &uniforms [[buffer(0)]],
+                               texture2d<int> texture [[texture(0)]])
+{
     constexpr sampler textureSampler(mag_filter::linear, min_filter::linear);
     
-    uint4 pixelValue = texture.sample(textureSampler, input.texCoord);
-    float colorValue = pixelValue.r / 255.0;
+    int4 pixelValue = texture.sample(textureSampler, input.texCoord);
+    float colorValue = (pixelValue.r / 125.0);
     
-    return float4(colorValue, colorValue, colorValue, 1.0);
+    float4 drawColor = float4(colorValue, colorValue, colorValue, 1.0);
+                               
+    return mix(drawColor, uniforms.clearColor, pixelValue.r < 0 ? 1.0 : 0.0);
 }

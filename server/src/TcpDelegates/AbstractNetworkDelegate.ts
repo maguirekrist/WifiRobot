@@ -31,7 +31,7 @@ abstract class NetworkDelegate implements ITcpSocket {
                     if(err) {
                         console.log("Error publishing data")
                     } else {
-                        client.socket.write("end")
+                        //client.socket.write("end")
                     }
                 });
                 // client.wait = !val;

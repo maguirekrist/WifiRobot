@@ -23,3 +23,9 @@ struct WifiSignal: Hashable, Codable {
     var quality: Int
     var signalLevel: Int
 }
+
+struct WifiPoint: Hashable {
+    var signal: WifiSignal
+    var position: Vector3D
+    var timestamp: Date
+}

@@ -17,3 +17,7 @@ struct Vertex {
     vector_float2 position;
     vector_float2 texCoord;
 };
+
+struct FragmentUniforms {
+    simd_float4 clearColor;
+};
