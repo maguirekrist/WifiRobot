@@ -74,15 +74,19 @@ class Renderer : NSObject, MTKViewDelegate {
        
         //Because our image is black and white, we can store pixel data as a single byte, hence why here we use the pixel format:
         //r8Uint which is no negative numbers and between 0 and 255.
-        if let grid = self.parent.mapModel.occupancyGrid {
+        if var grid = self.parent.mapModel.occupancyGrid {
             let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: grid.width, height: grid.height, mipmapped: false)
             
             self.gridTexture = self.metalDevice.makeTexture(descriptor: textureDescriptor)!
             
             let region = MTLRegionMake2D(0, 0, grid.width, grid.height)
+            
+            //Need to remap values in grid to ensure it is renderable
+            let displayGrid = grid.data.map { $0 % 255 }
+            
             //bytesPerRow is calculated by number of bytes per pixel multiplied by the image width
             //withBytes is the actually byte array of texture/image we want to load
-            self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: grid.data, bytesPerRow: 1 * grid.width)
+            self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: displayGrid, bytesPerRow: 1 * grid.width)
         }
         
         memcpy(viewMatrixBuffer.contents(), &self.viewMatrix, MemoryLayout<simd_float4x4>.stride)
