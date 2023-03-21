@@ -20,12 +20,10 @@ abstract class NetworkDelegate implements ITcpSocket {
     }
 
     abstract onMessage(msg: Buffer, rinfo: RemoteInfo): void;
-
-    onError?: ((err: Error) => void) | undefined;
     
     publish(data: object) {
         var stringified = JSON.stringify(data);
-        for(var client of this.clients) {
+        for(var client of this.clients.filter(c => !this.server.senders.has(c.socket))) {
             if(true) {
                 let val= client.socket.write(stringified, (err) => {
                     if(err) {
@@ -34,12 +32,14 @@ abstract class NetworkDelegate implements ITcpSocket {
                         client.socket.write("end")
                     }
                 });
+                console.log(val)
                 // client.wait = !val;
             }
         }
     }
 
     onDrain(client: net.Socket) {
+        console.log("Drain")
         // this.clients = this.clients.map(e => { 
         //     if(e.socket == client) {
         //         return { socket: client, wait: false }
@@ -54,6 +54,10 @@ abstract class NetworkDelegate implements ITcpSocket {
     }
 
     onClose(client: net.Socket) {
+        this.clients = this.clients.filter(c => c.socket !== client);
+    }
+
+    onError(client: net.Socket) {
         this.clients = this.clients.filter(c => c.socket !== client);
     }
 

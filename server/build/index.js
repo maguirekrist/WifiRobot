@@ -71,6 +71,6 @@ app.get(`/api/runs`, (req, res) => __awaiter(void 0, void 0, void 0, function* (
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {
     yield connectDb();
     socketServer.listen();
-    // wifiServer.listen();
+    wifiServer.listen();
     console.log('The application is listening on port 3000');
 }));

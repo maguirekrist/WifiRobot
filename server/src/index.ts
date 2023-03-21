@@ -42,6 +42,6 @@ app.get(`/api/runs`, async(req, res) => {
 app.listen(3000, async () => {
 	await connectDb();
 	socketServer.listen();
-	// wifiServer.listen();
+	wifiServer.listen();
 	console.log('The application is listening on port 3000');
 });
