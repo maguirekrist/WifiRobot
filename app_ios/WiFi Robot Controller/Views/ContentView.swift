@@ -23,13 +23,13 @@ struct PeripheralRow: View {
 }
 
 struct ContentView: View {
-    @ObservedObject private var bluetoothViewModel = BluetoothViewModel()
+//    @ObservedObject private var bluetoothViewModel = BluetoothViewModel()
     
     var body: some View {
-        if(bluetoothViewModel.connecting) {
-            ProgressView()
-        } else {
-            if(!bluetoothViewModel.connected) {
+//        if(bluetoothViewModel.connecting) {
+//            ProgressView()
+//        } else {
+//            if(!bluetoothViewModel.connected) {
 //                List(bluetoothViewModel.peripherals, id: \.self) { peripheral in
 //                    HStack {
 //                        Text(peripheral.name ?? "unnamed device")
@@ -62,14 +62,14 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.top)
-            } else {
-                if(bluetoothViewModel.selectedPeripheral?.services != nil) {
-                    List(bluetoothViewModel.selectedPeripheral!.services!, id: \.self) { service in
-                        Text(service.description)
-                    }
-                }
-            }
-        }
+//            } else {
+//                if(bluetoothViewModel.selectedPeripheral?.services != nil) {
+//                    List(bluetoothViewModel.selectedPeripheral!.services!, id: \.self) { service in
+//                        Text(service.description)
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
