@@ -6,7 +6,8 @@ function CreateMockMap(mapSize) {
     let occupancyGrid = {
         height: mapSize,
         width: mapSize,
-        data: []
+        data: [],
+        resolution: 0.5
     };
     for (let i = 0; i < mapSize; i++) {
         for (let j = 0; j < mapSize; j++) {

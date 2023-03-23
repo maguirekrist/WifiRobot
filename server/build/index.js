@@ -41,6 +41,7 @@ const WifiRun_1 = require("./models/WifiRun");
 const TcpMapDelegate_1 = __importDefault(require("./TcpDelegates/TcpMapDelegate"));
 const TcpWifiDelegate_1 = __importDefault(require("./TcpDelegates/TcpWifiDelegate"));
 const dotenv = __importStar(require("dotenv"));
+const mock_1 = require("./utils/mock");
 dotenv.config();
 const db_url = 'mongodb://localhost:27017';
 const db_name = 'bot_db';
@@ -70,7 +71,18 @@ app.get(`/api/runs`, (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 app.listen(3000, () => __awaiter(void 0, void 0, void 0, function* () {
     yield connectDb();
+    if (process.env.USE_MOCK == "true") {
+        yield upsertMockData();
+    }
     socketServer.listen();
     wifiServer.listen();
     console.log('The application is listening on port 3000');
 }));
+function upsertMockData() {
+    return __awaiter(this, void 0, void 0, function* () {
+        //Create a mock run
+        let wifiRun = (0, mock_1.CreateMockWifiRun)();
+        const run = new WifiRun_1.WifiRun(wifiRun);
+        yield run.save();
+    });
+}
