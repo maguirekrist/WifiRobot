@@ -21,6 +21,8 @@ class Renderer : NSObject, MTKViewDelegate {
     var viewMatrix: matrix_float4x4
     var viewMatrixBuffer: MTLBuffer
     
+    var fragmentUniformBuffer: MTLBuffer
+    
     var gridTexture: MTLTexture?
     var wifiTexture: MTLTexture?
     
@@ -60,7 +62,11 @@ class Renderer : NSObject, MTKViewDelegate {
         ]
         self.vertexBuffer = metalDevice.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Vertex>.stride, options: [])!
 
-        self.viewMatrix = MakeScaleMatrix(xScale: 0.5, yScale: 0.5)
+        var initialFragmentUniforms = FragmentUniforms(clearColor: [0.0, 0.5, 0.5, 1.0])
+        self.fragmentUniformBuffer = metalDevice.makeBuffer(bytes: &initialFragmentUniforms, length: MemoryLayout<FragmentUniforms>.stride, options: [])!
+        
+        
+        self.viewMatrix = MakeScaleMatrix(xScale: 1.7, yScale: 1.7)
         self.viewMatrixBuffer = metalDevice.makeBuffer(length: MemoryLayout<simd_float4x4>.stride, options: [])!
 
         
@@ -75,18 +81,16 @@ class Renderer : NSObject, MTKViewDelegate {
         //Because our image is black and white, we can store pixel data as a single byte, hence why here we use the pixel format:
         //r8Uint which is no negative numbers and between 0 and 255.
         if var grid = self.parent.mapModel.occupancyGrid {
-            let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Uint, width: grid.width, height: grid.height, mipmapped: false)
+            let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Sint, width: grid.width, height: grid.height, mipmapped: false)
             
             self.gridTexture = self.metalDevice.makeTexture(descriptor: textureDescriptor)!
             
             let region = MTLRegionMake2D(0, 0, grid.width, grid.height)
-            
-            //Need to remap values in grid to ensure it is renderable
-            let displayGrid = grid.data.map { $0 % 255 }
+        
             
             //bytesPerRow is calculated by number of bytes per pixel multiplied by the image width
             //withBytes is the actually byte array of texture/image we want to load
-            self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: displayGrid, bytesPerRow: 1 * grid.width)
+            self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: grid.data, bytesPerRow: 1 * grid.width)
         }
         
         memcpy(viewMatrixBuffer.contents(), &self.viewMatrix, MemoryLayout<simd_float4x4>.stride)
@@ -95,7 +99,8 @@ class Renderer : NSObject, MTKViewDelegate {
         let commandBuffer = metalCommandQueue.makeCommandBuffer()
         
         let renderPassDescriptor = view.currentRenderPassDescriptor
-        renderPassDescriptor?.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0.5, blue: 0.5, alpha: 1.0)
+        let clearColor = MTLClearColor(red: 0, green: 0.5, blue: 0.5, alpha: 1.0)
+        renderPassDescriptor?.colorAttachments[0].clearColor = clearColor
         renderPassDescriptor?.colorAttachments[0].loadAction = .clear
         renderPassDescriptor?.colorAttachments[0].storeAction = .store
         
@@ -104,7 +109,13 @@ class Renderer : NSObject, MTKViewDelegate {
         renderEncoder?.setRenderPipelineState(pipelineState)
         renderEncoder?.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder?.setVertexBuffer(viewMatrixBuffer, offset: 0, index: 1)
+        
+        //Fragment pipeline
+        let ptr = self.fragmentUniformBuffer.contents().bindMemory(to: FragmentUniforms.self, capacity: 1)
+        ptr.pointee.clearColor = SIMD4<Float>(x: Float(clearColor.red), y: Float(clearColor.green), z: Float(clearColor.blue), w: Float(clearColor.alpha))
         renderEncoder?.setFragmentTexture(self.gridTexture, index: 0)
+        renderEncoder?.setFragmentBuffer(self.fragmentUniformBuffer, offset: 0, index: 0)
+        
         renderEncoder?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
         
         

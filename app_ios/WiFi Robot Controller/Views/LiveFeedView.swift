@@ -15,7 +15,7 @@ struct LiveFeedView: View {
                 VStack {
                     MetalView()
                         .frame(height: 300)
-//                    WifiListView()
+                    WifiListView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.top)

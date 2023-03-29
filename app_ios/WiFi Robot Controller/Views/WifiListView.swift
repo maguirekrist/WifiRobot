@@ -13,9 +13,11 @@ struct WifiListView: View {
     
     var body: some View {
         Text("Default Run: ")
-        List(wifiModel.wifiCollections, id: \.self) { collection in
-            HStack {
-                Text(collection.timestamp.ISO8601Format(.iso8601))
+        List {
+            ForEach(Array(wifiModel.wifiMap.keys), id: \.self) { key in
+                HStack {
+                    Text(key)
+                }
             }
         }
     }

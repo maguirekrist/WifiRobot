@@ -47,6 +47,7 @@ app.listen(3000, async () => {
 		await upsertMockData();
 	}
 
+	// await connectDb();
 	socketServer.listen();
 	wifiServer.listen();
 	console.log('The application is listening on port 3000');
@@ -57,4 +58,4 @@ async function upsertMockData() {
 	let wifiRun = CreateMockWifiRun();
 	const run = new WifiRun(wifiRun);
 	await run.save()
-}
+}C
