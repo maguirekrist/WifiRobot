@@ -14,7 +14,7 @@ class GridProvider: ObservableObject, NetworkDelegate {
     private var client: NetworkClient!
     
     init() {
-        self.client = NetworkClient(self, host: "192.168.1.64", port: "3001", using: .tcp)
+        self.client = NetworkClient(self, host: "192.168.1.81", port: "3001", using: .tcp)
     }
     
     func onMessage(data: String) {
@@ -38,7 +38,7 @@ class GridProvider: ObservableObject, NetworkDelegate {
         
         for _ in 0..<dim {
             for _ in 0..<dim {
-                temp.data.append(UInt8.random(in: 0..<255))
+                temp.data.append(Int8.random(in: 0..<125))
             }
         }
         

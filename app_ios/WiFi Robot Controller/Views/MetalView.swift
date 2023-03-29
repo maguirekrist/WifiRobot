@@ -23,6 +23,7 @@ struct MetalView: UIViewRepresentable {
     func makeUIView(context: Context) -> MTKView {
         let metalView = MTKView(frame: .zero, device: MTLCreateSystemDefaultDevice())
         metalView.delegate = context.coordinator
+        metalView.isOpaque = false
         metalView.clearColor = MTLClearColor(red: 0.0, green: 0.5, blue: 0.0, alpha: 1.0)
         return metalView
     }

@@ -9,6 +9,7 @@ import Foundation
 
 class WifiDataProvider: ObservableObject, NetworkDelegate {
     @Published var wifiCollections: [WifiCollection] = []
+    @Published var wifiMap: Dictionary<String, [WifiPoint]> = [String: [WifiPoint]]()
     
     private var client: NetworkClient!
     private var dateFormatter: DateFormatter!
@@ -31,6 +32,16 @@ class WifiDataProvider: ObservableObject, NetworkDelegate {
             do {
                 let collection = try decoder.decode(WifiCollection.self, from: data.data(using: .utf8)!)
                 self.wifiCollections.append(collection)
+                for e in collection.data {
+                    var point: WifiPoint = WifiPoint(signal: e, position: collection.position, timestamp: collection.timestamp)
+                    if var pointArr = self.wifiMap[e.address] {
+//                        self.wifiMap[e.address]!.append(point)
+                        pointArr.append(point)
+                    } else {
+                        self.wifiMap[e.address] = [point]
+                    }
+                }
+                self.objectWillChange.send() //Apparently we need this hack, because dictionary updates do not get propogated by default to subscribers listening
             } catch let error {
                 print("Error occured whilst decoding incoming wifi collection: \(error)")
             }

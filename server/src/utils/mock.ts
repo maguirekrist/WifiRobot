@@ -8,7 +8,8 @@ export function CreateMockMap(mapSize: number): IOccupancyGrid {
     let occupancyGrid: IOccupancyGrid = {
         height: mapSize,
         width: mapSize,
-        data: []
+        data: [],
+        resolution: 0.5
     }
 
     for(let i = 0; i < mapSize; i++) {

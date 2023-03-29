@@ -10,7 +10,7 @@ import Foundation
 struct OccupancyGrid: Codable {
     var width: Int
     var height: Int
-    var data: [UInt8]
+    var data: [Int8]
 }
 
 struct Vector3D: Hashable, Codable {
