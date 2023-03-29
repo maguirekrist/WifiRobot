@@ -18,7 +18,6 @@ class Renderer : NSObject, MTKViewDelegate {
     let pipelineState: MTLRenderPipelineState
     let vertexBuffer: MTLBuffer
     
-    var viewMatrix: matrix_float4x4
     var viewMatrixBuffer: MTLBuffer
     
     var fragmentUniformBuffer: MTLBuffer
@@ -61,13 +60,12 @@ class Renderer : NSObject, MTKViewDelegate {
             
         ]
         self.vertexBuffer = metalDevice.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Vertex>.stride, options: [])!
-
         var initialFragmentUniforms = FragmentUniforms(clearColor: [0.0, 0.5, 0.5, 1.0])
         self.fragmentUniformBuffer = metalDevice.makeBuffer(bytes: &initialFragmentUniforms, length: MemoryLayout<FragmentUniforms>.stride, options: [])!
         
-        
-        self.viewMatrix = MakeScaleMatrix(xScale: 1.7, yScale: 1.7)
+    
         self.viewMatrixBuffer = metalDevice.makeBuffer(length: MemoryLayout<simd_float4x4>.stride, options: [])!
+        
 
         
         super.init()
@@ -87,13 +85,24 @@ class Renderer : NSObject, MTKViewDelegate {
             
             let region = MTLRegionMake2D(0, 0, grid.width, grid.height)
         
-            
             //bytesPerRow is calculated by number of bytes per pixel multiplied by the image width
             //withBytes is the actually byte array of texture/image we want to load
             self.gridTexture!.replace(region: region, mipmapLevel: 0, withBytes: grid.data, bytesPerRow: 1 * grid.width)
+            
+            if var selection = self.parent.wifiSelectionController.wifiSelection {
+                let wifiTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r8Sint, width: grid.width, height: grid.height, mipmapped: false)
+                
+                self.wifiTexture = self.metalDevice.makeTexture(descriptor: wifiTextureDescriptor)!
+                
+                let textureRegion = MTLRegionMake2D(0, 0, grid.width, grid.height)
+                    
+                //TODO: actually pass in a byte array representing the texture
+//                self.wifiTexture!.replace(region: textureRegion, mipmapLevel: 0, withBytes: nil, bytesPerRow: 1 * grid.width)
+            }
+        
         }
         
-        memcpy(viewMatrixBuffer.contents(), &self.viewMatrix, MemoryLayout<simd_float4x4>.stride)
+        memcpy(viewMatrixBuffer.contents(), &self.parent.viewController.viewMatrix, MemoryLayout<simd_float4x4>.stride)
         
         
         let commandBuffer = metalCommandQueue.makeCommandBuffer()

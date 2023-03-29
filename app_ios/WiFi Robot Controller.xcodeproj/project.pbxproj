@@ -17,6 +17,8 @@
 		BD99997129BF3CE5002C5EDA /* WifiModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD99997029BF3CE5002C5EDA /* WifiModels.swift */; };
 		BD99997329BF3D0E002C5EDA /* VisualModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD99997229BF3D0E002C5EDA /* VisualModels.swift */; };
 		BD99997529BF5E77002C5EDA /* WifiListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD99997429BF5E77002C5EDA /* WifiListView.swift */; };
+		BD9CD12E29CCFAD90036BE05 /* MetalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD9CD12D29CCFAD90036BE05 /* MetalViewController.swift */; };
+		BDB40A8329CA93D8003A21EE /* WifiViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDB40A8229CA93D8003A21EE /* WifiViewController.swift */; };
 		BDC398F929C34D6500FE44DD /* SimdUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC398F829C34D6500FE44DD /* SimdUtils.swift */; };
 		BDC398FB29C3E43F00FE44DD /* LiveFeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC398FA29C3E43F00FE44DD /* LiveFeedView.swift */; };
 		BDF4974E298C3D7F006CF8B3 /* WiFi_Robot_ControllerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF4974D298C3D7F006CF8B3 /* WiFi_Robot_ControllerApp.swift */; };
@@ -57,6 +59,8 @@
 		BD99997029BF3CE5002C5EDA /* WifiModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiModels.swift; sourceTree = "<group>"; };
 		BD99997229BF3D0E002C5EDA /* VisualModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualModels.swift; sourceTree = "<group>"; };
 		BD99997429BF5E77002C5EDA /* WifiListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiListView.swift; sourceTree = "<group>"; };
+		BD9CD12D29CCFAD90036BE05 /* MetalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalViewController.swift; sourceTree = "<group>"; };
+		BDB40A8229CA93D8003A21EE /* WifiViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiViewController.swift; sourceTree = "<group>"; };
 		BDC398F829C34D6500FE44DD /* SimdUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimdUtils.swift; sourceTree = "<group>"; };
 		BDC398FA29C3E43F00FE44DD /* LiveFeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveFeedView.swift; sourceTree = "<group>"; };
 		BDF4974A298C3D7F006CF8B3 /* WiFi Robot Controller.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WiFi Robot Controller.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -137,6 +141,15 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		BDB40A8129CA937E003A21EE /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BDB40A8229CA93D8003A21EE /* WifiViewController.swift */,
+				BD9CD12D29CCFAD90036BE05 /* MetalViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
 		BDC398F729C34D5500FE44DD /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -168,6 +181,7 @@
 		BDF4974C298C3D7F006CF8B3 /* WiFi Robot Controller */ = {
 			isa = PBXGroup;
 			children = (
+				BDB40A8129CA937E003A21EE /* Controllers */,
 				BDC398F729C34D5500FE44DD /* Utils */,
 				BD99996F29BF3CD5002C5EDA /* Models */,
 				BD99996829BD3EA5002C5EDA /* Network */,
@@ -339,7 +353,9 @@
 				BD99996C29BE7A23002C5EDA /* WifiDataProvider.swift in Sources */,
 				BDC398F929C34D6500FE44DD /* SimdUtils.swift in Sources */,
 				BD99996029BCE767002C5EDA /* Renderer.swift in Sources */,
+				BDB40A8329CA93D8003A21EE /* WifiViewController.swift in Sources */,
 				BDC398FB29C3E43F00FE44DD /* LiveFeedView.swift in Sources */,
+				BD9CD12E29CCFAD90036BE05 /* MetalViewController.swift in Sources */,
 				BDF49750298C3D7F006CF8B3 /* ContentView.swift in Sources */,
 				BD99996A29BD3EE4002C5EDA /* BluetoothManager.swift in Sources */,
 				BD99996229BCEC2A002C5EDA /* MetalView.swift in Sources */,

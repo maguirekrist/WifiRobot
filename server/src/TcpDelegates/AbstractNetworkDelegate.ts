@@ -1,5 +1,4 @@
 import { RemoteInfo } from "dgram";
-import { Socket } from "net";
 import { ITcpSocket, TCPServer } from "../servers/TCPServer";
 import net from 'net'
 
