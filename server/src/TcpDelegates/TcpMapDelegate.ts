@@ -17,10 +17,10 @@ class TcpMapDelegate extends NetworkDelegate {
         if(process.env.USE_MOCK == 'true')
             this.map = CreateMockMap(400);
 
-        setInterval(() => {
-            if(this.map)
-                this.publishMap();
-        }, 5000)
+        // setInterval(() => {
+        //     if(this.map)
+        //         this.publishMap();
+        // }, 5000)
     }
 
     override onMessage(msg: Buffer, rinfo: RemoteInfo) {
@@ -31,7 +31,13 @@ class TcpMapDelegate extends NetworkDelegate {
             this.map = this.remapGrid(msgJson as IOccupancyGrid);
             console.log(`Received map of ${this.map?.width} width and ${this.map?.height}: is correct? ${this.map?.height * this.map?.width == this.map?.data.length}`)
             // console.log(this.map.data.filter(e => e != 0 && e != 255))
+            this.publishMap();
         }
+    }
+
+    onConnect(socket: net.Socket): void {
+        super.onConnect(socket)
+        this.publishMap();
     }
     
     private handleInitializeRun(msg: any): boolean {
@@ -58,7 +64,8 @@ class TcpMapDelegate extends NetworkDelegate {
 
     private publishMap(): void {
         // console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`)
-        super.publish(this.map!);
+        if(this.map)
+            super.publish(this.map!);
     }
 }
 

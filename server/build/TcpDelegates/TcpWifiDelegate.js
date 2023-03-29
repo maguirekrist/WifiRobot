@@ -11,12 +11,13 @@ class TcpWifiDelegate extends AbstractNetworkDelegate_1.default {
     constructor() {
         super(3002);
         this.current_run = undefined;
-        if (process.env.USE_MOCK == 'true')
+        if (process.env.USE_MOCK == 'true') {
             this.current_run = (0, mock_1.CreateMockWifiRun)();
-        setInterval(() => {
-            if (this.current_run && this.current_run.scans[0])
-                this.publishCollection();
-        }, 5000);
+            // setInterval(() => {
+            //     if(this.current_run && this.current_run.scans[0])
+            //         this.publishCollection();
+            // }, 5000)
+        }
     }
     onMessage(msg, rinfo) {
         let msgStr = msg.toString();
@@ -25,10 +26,16 @@ class TcpWifiDelegate extends AbstractNetworkDelegate_1.default {
             let collection = new WifiCollection_1.WifiCollection(msgJson);
             this.current_run.scans.push(collection);
             this.current_run.save();
+            console.log(`New position of little robot: ${collection.position.x}, ${collection.position.y}`);
+            this.publishCollection();
         }
         ;
     }
     ;
+    onConnect(socket) {
+        super.onConnect(socket);
+        this.publishCollection();
+    }
     handleInitializeRun(msg) {
         if (!msg["runId"])
             return false;
@@ -41,7 +48,8 @@ class TcpWifiDelegate extends AbstractNetworkDelegate_1.default {
     }
     publishCollection() {
         // console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
-        super.publish(this.current_run.scans[0]);
+        if (this.current_run && this.current_run.scans[0])
+            super.publish(this.current_run.scans[0]);
     }
 }
 exports.default = TcpWifiDelegate;

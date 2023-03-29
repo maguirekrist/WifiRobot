@@ -1,10 +1,9 @@
 import { RemoteInfo } from "dgram";
 import { WifiCollection } from "../models/WifiCollection";
 import { IWifiRun, WifiRun } from "../models/WifiRun";
-import { ITcpSocket } from "../servers/TCPServer";
-import net from 'net'
 import NetworkDelegate from "./AbstractNetworkDelegate";
 import { CreateMockWifiRun } from "../utils/mock";
+import { Socket } from "net";
 
 class TcpWifiDelegate extends NetworkDelegate {
     current_run?: IWifiRun & any = undefined;
@@ -12,13 +11,14 @@ class TcpWifiDelegate extends NetworkDelegate {
     constructor() {
         super(3002);
 
-        if(process.env.USE_MOCK == 'true')
+        if(process.env.USE_MOCK == 'true') {
             this.current_run = CreateMockWifiRun();
 
-        setInterval(() => {
-            if(this.current_run && this.current_run.scans[0])
-                this.publishCollection();
-        }, 5000)
+            // setInterval(() => {
+            //     if(this.current_run && this.current_run.scans[0])
+            //         this.publishCollection();
+            // }, 5000)
+        }
     }
 
     override onMessage (msg: Buffer, rinfo: RemoteInfo): void {
@@ -28,8 +28,15 @@ class TcpWifiDelegate extends NetworkDelegate {
             let collection = new WifiCollection(msgJson)
             this.current_run.scans.push(collection);
             this.current_run.save();
+            console.log(`New position of little robot: ${collection.position.x}, ${collection.position.y}`)
+            this.publishCollection();
         };
     };
+
+    onConnect(socket: Socket): void {
+        super.onConnect(socket);
+        this.publishCollection();
+    }
 
     private handleInitializeRun(msg: any): boolean {
         if(!msg["runId"])
@@ -46,7 +53,8 @@ class TcpWifiDelegate extends NetworkDelegate {
 
     private publishCollection(): void {
         // console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
-        super.publish(this.current_run.scans[0]);
+        if(this.current_run && this.current_run.scans[0])
+            super.publish(this.current_run.scans[0]);
     }
 
 }
