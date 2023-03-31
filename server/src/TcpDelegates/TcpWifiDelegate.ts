@@ -44,15 +44,18 @@ class TcpWifiDelegate extends NetworkDelegate {
         
         console.log(`Connected to a new run ${msg["runId"]} on Wifi`)
 
-        this.current_run = new WifiRun({
-            name: msg["runId"]
-        });
-        this.current_run.save();
+        if(process.env.USE_MOCK == 'false') {
+            this.current_run = new WifiRun({
+                name: msg["runId"]
+            });
+            this.current_run.save();
+        }
         return true;
     }
 
     private publishCollection(): void {
-        // console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
+        console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
+        console.log(this.current_run.scans[0])
         if(this.current_run && this.current_run.scans[0])
             super.publish(this.current_run.scans[0]);
     }

@@ -28,17 +28,16 @@ abstract class NetworkDelegate implements ITcpSocket {
                     if(err) {
                         console.log("Error publishing data")
                     } else {
-                        //client.socket.write("end")
+                        client.socket.write("end")
                     }
                 });
-                console.log(val)
+                //console.log(val)
                 // client.wait = !val;
             }
         }
     }
 
     onDrain(client: net.Socket) {
-        console.log("Drain")
         // this.clients = this.clients.map(e => { 
         //     if(e.socket == client) {
         //         return { socket: client, wait: false }

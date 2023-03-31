@@ -14,7 +14,7 @@ struct LiveFeedView: View {
     var viewController: MetalViewController = MetalViewController()
     
     var body: some View {
-                VStack {
+        VStack(alignment: .leading) {
                     MetalView(wifiController: self.wifiViewController, viewController: self.viewController)
                         .frame(height: 300)
                         .gesture(
@@ -24,21 +24,27 @@ struct LiveFeedView: View {
                                     self.viewController.scaleView(Float(value.magnitude))
                                 }
                                 .onEnded { value in
-                                    self.viewController.lastScaleFactor = Float(value.magnitude)
+                                    self.viewController.endScale()
                                 }
                                 .simultaneously(with:
                                     DragGesture(minimumDistance: 0, coordinateSpace: .local)
                                     .onChanged { value in
-                                        print(value.translation)
-                                        
                                         self.viewController.translateView2d(SIMD2<Float>(Float(value.translation.width / 150), -Float(value.translation.height / 150)))
                                     }
                                     .onEnded { value in
-                                        self.viewController.lastTranslation = SIMD2<Float>(Float(value.translation.width / 150), -Float(value.translation.height / 150))
+                                        self.viewController.endTranslation()
                                     }
                                 )
+                                .simultaneously(with:
+                                   RotationGesture()
+                                    .onChanged { value in
+                                        print(value)
+                                    }
+                                    .onEnded { value in
+                                        
+                                    })
                         )
-                    WifiListView(controller: self.wifiViewController)
+                        WifiListView(controller: self.wifiViewController)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.top)

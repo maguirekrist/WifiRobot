@@ -12,6 +12,7 @@ class WifiViewController: ObservableObject {
     @Published var wifiHeatMap: [UInt8]?
     
     func setWifiSelection(_ selection: WifiSelection) {
+        print("Current Wifi-Selection changed to ", selection.label)
         self.wifiSelection = selection;
     }
     

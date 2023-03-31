@@ -40,8 +40,6 @@ fragment float4 fragmentShader(
     float colorValue = (pixelValue.r / 125.0);
     
     float4 drawColor = float4(colorValue, colorValue, colorValue, 1.0);
-                               
-//    return mix(drawColor, uniforms.clearColor, pixelValue.r < 0 ? 1.0 : 0.0);
-    float4 clearColor = float4(1.0, 0.0, 0.0, 1.0);
-    return mix(drawColor, clearColor, pixelValue.r < 0 ? 1.0 : 0.0);
+                            
+    return mix(drawColor, uniforms.clearColor, pixelValue.r < 0 ? 1.0 : 0.0);
 }

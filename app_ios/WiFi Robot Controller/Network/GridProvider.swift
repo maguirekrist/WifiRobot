@@ -14,7 +14,7 @@ class GridProvider: ObservableObject, NetworkDelegate {
     private var client: NetworkClient!
     
     init() {
-        self.client = NetworkClient(self, host: "192.168.1.64", port: "3001", using: .tcp)
+        self.client = NetworkClient(self, host: "192.168.1.81", port: "3001", using: .tcp)
     }
     
     func onMessage(data: String) {

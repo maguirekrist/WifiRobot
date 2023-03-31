@@ -32,5 +32,6 @@ struct WifiPoint: Hashable {
 
 struct WifiSelection {
     var label: String
+    var essid: String
     var points: [WifiPoint]
 }

@@ -14,13 +14,14 @@ class TcpMapDelegate extends NetworkDelegate {
 
     constructor() {
         super(3001);
-        if(process.env.USE_MOCK == 'true')
-            this.map = CreateMockMap(400);
+        if(process.env.USE_MOCK == 'true') {
+            this.map = this.remapGrid(CreateMockMap(400));
 
-        // setInterval(() => {
-        //     if(this.map)
-        //         this.publishMap();
-        // }, 5000)
+            // setInterval(() => {
+            //     if(this.map)
+            //         this.publishMap();
+            // }, 5000)
+        }
     }
 
     override onMessage(msg: Buffer, rinfo: RemoteInfo) {
@@ -46,7 +47,8 @@ class TcpMapDelegate extends NetworkDelegate {
         
         console.log(`Connected to a new run ${msg["runId"]} on Map`)
 
-        this.current_run = WifiRun.find({ name: msg["runId"]});
+        if(process.env.USE_MOCK == 'false')
+            this.current_run = WifiRun.find({ name: msg["runId"]});
         return true;
     }
 
@@ -63,7 +65,7 @@ class TcpMapDelegate extends NetworkDelegate {
     }
 
     private publishMap(): void {
-        // console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`)
+        console.log(`Publishing map to ${this.clients.length} clients, map size: ${Buffer.from(JSON.stringify(this.map)).byteLength}`)
         if(this.map)
             super.publish(this.map!);
     }

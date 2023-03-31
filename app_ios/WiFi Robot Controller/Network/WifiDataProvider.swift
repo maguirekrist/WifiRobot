@@ -15,7 +15,7 @@ class WifiDataProvider: ObservableObject, NetworkDelegate {
     private var dateFormatter: DateFormatter!
     
     init() {
-        self.client = NetworkClient(self, host: "192.168.1.64", port: "3002", using: .tcp)
+        self.client = NetworkClient(self, host: "192.168.1.81", port: "3002", using: .tcp)
         self.dateFormatter = DateFormatter()
         self.dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         self.dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"

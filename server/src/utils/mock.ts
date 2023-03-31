@@ -14,7 +14,7 @@ export function CreateMockMap(mapSize: number): IOccupancyGrid {
 
     for(let i = 0; i < mapSize; i++) {
         for(let j = 0; j < mapSize; j++) {
-            occupancyGrid.data.push(Math.floor(Math.random() * 255));
+            occupancyGrid.data.push(Math.floor(Math.random() * (Math.round(Math.random()) == 1 ? -1 : 1) * 100));
         }
     }
 
