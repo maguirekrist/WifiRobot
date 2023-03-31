@@ -58,4 +58,4 @@ async function upsertMockData() {
 	let wifiRun = CreateMockWifiRun();
 	const run = new WifiRun(wifiRun);
 	await run.save()
-}C
+}

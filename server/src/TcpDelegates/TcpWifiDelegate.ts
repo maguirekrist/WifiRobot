@@ -53,8 +53,8 @@ class TcpWifiDelegate extends NetworkDelegate {
 
     private publishCollection(): void {
         // console.log(`Publishing wifi to ${this.clients.length} clients, wifi run size: ${Buffer.from(JSON.stringify(this.current_run.scans[0])).byteLength}`)
-        if(this.current_run && this.current_run.scans[0])
-            super.publish(this.current_run.scans[0]);
+        if(this.current_run && this.current_run.scans.length > 0)
+            super.publish(this.current_run.scans[this.current_run.scans.length - 1]);
     }
 
 }
