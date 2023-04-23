@@ -41,7 +41,7 @@ app.get(`/api/wifi/:runId`, async (req, res) => {
 })
 
 app.get(`/api/wifi/runs`, async(req, res) => {
-	res.send(await WifiRun.find().sort({ ranOn: -1 }).select({ name: 1, _id: 1 }))
+	res.send(await WifiRun.find().sort({ ranOn: -1 }))
 })
 
 app.listen(3000, async () => {
