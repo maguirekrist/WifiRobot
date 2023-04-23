@@ -34,8 +34,6 @@ def get_wireless_data() -> List[NetworkStrength]:
         signal = signal_re.findall(ele)
         address = address_re.findall(ele)
 
-
-
         if(essid and not any(x.essid == essid[0] for x in signals)):
             signals.append(NetworkStrength(essid=essid[0], quality=int(quality[0]), signalLevel=int(signal[0]), address=address[0]))
     
