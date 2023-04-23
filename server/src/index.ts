@@ -15,7 +15,11 @@ const socketServer = new TcpMapDelegate();
 const wifiServer = new TcpWifiDelegate();
 
 async function connectDb() {
-	await mongoose.connect(`${db_url}/${db_name}`);
+	try {
+		await mongoose.connect(`${db_url}/${db_name}`);
+	} catch(err) {
+		console.error(err)
+	}
 	mongoose.connection.db.dropDatabase();
 	console.log("Connected sucessfully to Mongodb");
 }
@@ -36,7 +40,7 @@ app.get(`/api/wifi/:runId`, async (req, res) => {
 	res.send(await WifiRun.find({ _id: req.params.runId }));
 })
 
-app.get(`/api/runs`, async(req, res) => {
+app.get(`/api/wifi/runs`, async(req, res) => {
 	res.send(await WifiRun.find().sort({ ranOn: -1 }).select({ name: 1, _id: 1 }))
 })
 
