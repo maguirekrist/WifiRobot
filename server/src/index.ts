@@ -32,15 +32,23 @@ app.get('/', (req, res) => {
 
 //GET: The Turtlebot's most recent wifi poll
 app.get('/api/wifi/:runId/latest', async (req, res) => {
-	let latestRun = await WifiRun.findOne({ _id: req.params.runId });
+	try {
+		let latestRun = await WifiRun.findOne({ _id: req.params.runId });
+	} catch(err) {
+		res.sendStatus(404);
+	}
 	res.send("on prog.");
 })
 
 app.get(`/api/wifi/:runId`, async (req, res) => {
-	res.send(await WifiRun.find({ _id: req.params.runId }));
+	try {
+		res.send(await WifiRun.find({ _id: req.params.runId }));
+	} catch(err) {
+		res.sendStatus(404)
+	}
 })
 
-app.get(`/api/wifi/runs`, async(req, res) => {
+app.get(`/api/runs`, async(req, res) => {
 	res.send(await WifiRun.find().sort({ ranOn: -1 }))
 })
 
